@@ -1,13 +1,28 @@
 package BOLayer;
 
-public class Customer {
-    public String Username;
-    public String Name;
-    public String AccountType;
-    public int Balance;
-    public String Status;
-    public int AccountNo;
-    public String Pin;
+import java.io.Serializable;
+
+public class Customer implements Serializable {
+    private String Username;
+    private String Name;
+    private String AccountType;
+    private int Balance;
+    private String Status;
+    private int AccountNo;
+    private String Pin;
+
+    public Customer(String username, String name, String accountType, int balance, String status, int accountNo, String pin) {
+        Username = username;
+        Name = name;
+        AccountType = accountType;
+        Balance = balance;
+        Status = status;
+        AccountNo = accountNo;
+        Pin = pin;
+    }
+
+    public Customer(){
+    }
 
     public String getUsername() {
         return Username;

@@ -1,19 +1,13 @@
 package ATM;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import BOLayer.Admin;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
+import BOLayer.Customer;
 import DataLayer.Data;
 import LogicLayer.Logic;
+
+
+import java.util.ArrayList;
 // import ViewLayer.View;
 
-/**
- * Hello world!
- *
- */
 public class App
 {
     public static void main( String[] args )
@@ -21,21 +15,9 @@ public class App
         // Code Used to write an admin to the file
 
         Logic logic = new Logic();
-        Admin admin = new Admin(logic.EncryptionDecryption("uch"), logic.EncryptionDecryption("5555"));
+//        Customer customer = new Customer("marr4631", "Mauricio Rodríguez", "Test", 5000, "Open", 9009, "5500");
         Data data = new Data();
-        data.AddToFile(admin, false);
-
-
-        ArrayList<Admin> adminData = (ArrayList<Admin>) data.ReadAdminFile();
-        try {
-            data.saveToFile(adminData);
-        } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        for(Admin AdminObj : adminData){
-            System.out.println(AdminObj.getPin());
-        }
+//        data.AddToFile(customer, true);
 
         // View view = new View();
         // view.loginScreen();
