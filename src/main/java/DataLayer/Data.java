@@ -114,15 +114,26 @@ public class Data {
         return false;
     }
 
-    // TODO: make only one mothod to check user, pin and account status.
-    public boolean isUserActive(String user){
+    // Checks if the user, account status and pin provided are correct.
+    public boolean canLogin(Customer user){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         for (Customer customer : list){
-            return customer.getUsername().equalsIgnoreCase(user) && customer.getStatus().equalsIgnoreCase("Open");
+            return (
+                        customer.getUsername().equalsIgnoreCase(user.getUsername())
+                        && customer.getStatus().equalsIgnoreCase("Open")
+                        && customer.getPin().equals(user.getPin())
+                    );
         }
         return false;
     }
 
-
-
+    public boolean isInFile(int accNo){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list){
+            if(customer.getAccountNo() == accNo){
+                return true;
+            }
+        }
+        return false;
+    }
 }
