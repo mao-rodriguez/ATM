@@ -126,7 +126,7 @@ public class Data {
         }
         return false;
     }
-
+    // Checks if an user is in file.
     public boolean isInFile(int accNo){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         for (Customer customer : list){
@@ -136,4 +136,54 @@ public class Data {
         }
         return false;
     }
+
+    // Return a customer searched by user name.
+    public Customer getCustomer(String username){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list) {
+            if (customer.getUsername().equalsIgnoreCase(username)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
+    // Return the last account number used.
+    public int getLastAccountNumber(){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        if (list.size() > 0){
+            Customer customer = list.get(list.size()-1);
+            return customer.getAccountNo();
+        }
+        return 0;
+    }
+
+    // Deduct amount from balance and update it in file
+    public void deductBalance(Customer c, int amount) throws JsonProcessingException {
+        int balance = c.getBalance();
+        balance -= amount;
+        c.setBalance(balance);
+        updateInFile(c);
+    }
+
+    // Add amount to balance of an account and update it in file
+    public void addAmount(Customer c, int amount) throws JsonProcessingException {
+        int balance = c.getBalance();
+        balance += amount;
+        c.setBalance(balance);
+        updateInFile(c);
+    }
+
+    // Returns the total amount a customer has withdrawn today.
+    public int todayTransactionsAmount(int accNo){
+        ArrayList<Transaction> list = ReadFile("Transaction", Transaction.class);
+        int totalAmount = 0;
+        for (Transaction t : list){
+            if (t.getAccountNo() == accNo){
+                totalAmount += t.getTransactionAmount();
+            }
+        }
+        return totalAmount;
+    }
+
 }
