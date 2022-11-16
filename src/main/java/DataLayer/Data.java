@@ -104,7 +104,7 @@ public class Data {
     }
 
     // Checks if an Admin object is in file.
-    public boolean isInFIle(Admin user){
+    public boolean isInFile(Admin user){
         ArrayList<Admin> list = ReadFile("Admin", Admin.class);
         for (Admin admin : list){
             if(admin.getUsername().equalsIgnoreCase(user.getUsername()) && admin.getPin().equalsIgnoreCase(user.getPin())){
@@ -120,7 +120,7 @@ public class Data {
         for (Customer customer : list){
             return (
                         customer.getUsername().equalsIgnoreCase(user.getUsername())
-                        && customer.getStatus().equalsIgnoreCase("Open")
+                        && customer.getStatus().equalsIgnoreCase("Active")
                         && customer.getPin().equals(user.getPin())
                     );
         }
@@ -185,5 +185,4 @@ public class Data {
         }
         return totalAmount;
     }
-
 }
