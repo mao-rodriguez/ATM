@@ -137,6 +137,17 @@ public class Data {
         return false;
     }
 
+    // Checks if an user is in file
+    public boolean isInFile(String username){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list){
+            if(customer.getUsername() == username){
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Return a customer searched by user name.
     public Customer getCustomer(String username){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);

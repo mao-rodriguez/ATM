@@ -5,6 +5,8 @@ import BOLayer.Customer;
 import DataLayer.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.util.Scanner;
+
 public class Logic {
 
     // Verify if admin data is in file.
@@ -24,6 +26,20 @@ public class Logic {
         char[] s = username.toCharArray();
         for (char c : s){
             if((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')){
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isValidPin(String s){
+        if(s.length() != 5){
+            return false;
+        }
+        for (char c: s.toCharArray()) {
+            if(c >= '0' || c <= '9'){
                 continue;
             } else {
                 return false;
@@ -63,5 +79,45 @@ public class Logic {
         Customer customer = data.getCustomer(username);
         customer.setStatus("Disable");
         data.updateInFile(customer);
+    }
+
+    // Create an account of customer
+    public void createAccount(){
+        Data data = new Data();
+        Customer customer = new Customer();
+        boolean check = true;
+        Scanner console = new Scanner(System.in);
+
+        System.out.println("--- Creating new account ---");
+        while (check){
+            System.out.println("Username: ");
+            String un = console.next();
+            customer.setUsername(EncryptionDecryption(un));
+            // Checks if the username typed is valid (Username can only contain A-Z, a-z & 0-9)
+            if (un == "" || !isValidUserName(un)){
+                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
+            } else if (data.isInFile(customer.getUsername())) {
+                System.out.println("Username is in use, enter again.");
+            } else {
+                check = false;
+            }
+        }
+
+        check = true;
+        while (check){
+            System.out.println("5 digit PIN: ");
+            String un = console.next();
+            customer.setUsername(EncryptionDecryption(un));
+            // Checks if the username typed is valid (Username can only contain A-Z, a-z & 0-9)
+            if (un == "" || !isValidUserName(un)){
+                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
+            } else if (data.isInFile(customer.getUsername())) {
+                System.out.println("Username is in use, enter again.");
+            } else {
+                check = false;
+            }
+        }
+
+
     }
 }
