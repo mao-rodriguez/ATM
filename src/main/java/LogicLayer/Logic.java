@@ -85,10 +85,11 @@ public class Logic {
     public void createAccount(){
         Data data = new Data();
         Customer customer = new Customer();
-        boolean check = true;
         Scanner console = new Scanner(System.in);
 
         System.out.println("--- Creating new account ---");
+        // Check and set the username.
+        boolean check = true;
         while (check){
             System.out.println("Username: ");
             String un = console.next();
@@ -103,16 +104,40 @@ public class Logic {
             }
         }
 
+        // Checks and set de PIN.
         check = true;
         while (check){
             System.out.println("5 digit PIN: ");
-            String un = console.next();
-            customer.setUsername(EncryptionDecryption(un));
-            // Checks if the username typed is valid (Username can only contain A-Z, a-z & 0-9)
-            if (un == "" || !isValidUserName(un)){
-                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
-            } else if (data.isInFile(customer.getUsername())) {
-                System.out.println("Username is in use, enter again.");
+            String pin = console.next();
+            customer.setPin(EncryptionDecryption(pin));
+            // Checks if the PIN typed is valid (PIN is only 5 digit long and can only contain numbers from 0 to 9)
+            if (pin == "" || !isValidPin(pin)){
+                System.out.println("Please enter valid PIN (PIN is only 5 digit long and can only contain numbers from 0 to 9)");
+            } else {
+                check = false;
+            }
+        }
+
+        // Checks and sets the holder's name.
+        do {
+            check = true;
+            System.out.println("Holder's Name: ");
+            String name = console.next().trim();
+            if (name.isBlank()){
+                System.out.println("Wrong holder's name input, please enter again.");
+            }else {
+                customer.setName(name);
+                check = false;
+            }
+        } while (check);
+
+        // Checks and sets account type.
+        check = true;
+        while (check){
+            System.out.println("Account type: 1.Savings , 2.Current");
+            customer.setAccountType(console.next());
+            if (!(customer.getUsername().equals("1") || customer.getUsername().equals("2"))){
+                System.out.println("Wrong input. Enter 1.Savings , 2.Current");
             } else {
                 check = false;
             }
