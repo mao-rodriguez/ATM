@@ -114,6 +114,28 @@ public class Data {
         return false;
     }
 
+    // Checks if a user is in file
+    public boolean isInFile(String username){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list){
+            if(customer.getUsername() == username){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Checks if a user is in file, searched by account number.
+    public boolean isInFile(int accNo){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list){
+            if(customer.getAccountNo() == accNo){
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Checks if the user, account status and pin provided are correct.
     public boolean canLogin(Customer user){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
@@ -126,33 +148,23 @@ public class Data {
         }
         return false;
     }
-    // Checks if an user is in file.
-    public boolean isInFile(int accNo){
-        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
-        for (Customer customer : list){
-            if(customer.getAccountNo() == accNo){
-                return true;
-            }
-        }
-        return false;
-    }
 
-    // Checks if an user is in file
-    public boolean isInFile(String username){
-        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
-        for (Customer customer : list){
-            if(customer.getUsername() == username){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Return a customer searched by user name.
+    // Return a customer searched by username.
     public Customer getCustomer(String username){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         for (Customer customer : list) {
             if (customer.getUsername().equalsIgnoreCase(username)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
+    // Return a customer searched by number account.
+    public Customer getCustomer(int accNo){
+        ArrayList<Customer> list = ReadFile("Customer", Customer.class);
+        for (Customer customer : list) {
+            if (customer.getAccountNo() == accNo) {
                 return customer;
             }
         }

@@ -48,6 +48,30 @@ public class Logic {
         return true;
     }
 
+    // Guest the user to enter a valid number.
+    private Integer getValidNumber(String msg){
+        Integer num = 0;
+        Scanner console = new Scanner(System.in);
+        boolean check = false;
+        do {
+            System.out.print(msg);
+            try{
+                num = Integer.parseInt(console.next());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input, want to try again?. 1. Yes , 2. No: ");
+                String opt = console.next();
+                if (opt.equals("1")){
+                    check = true;
+                } else {
+                    num = null;
+                    check = false;
+                }
+            }
+        }while (check);
+        console.close();
+        return num;
+    }
+
     // Encryption Method
     // For alphabets we swap A with Z, B with Y and so on.
     // A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
@@ -104,6 +128,7 @@ public class Logic {
             }
         }
 
+
         // Checks and set de PIN.
         check = true;
         while (check){
@@ -120,14 +145,12 @@ public class Logic {
 
         // Checks and sets the holder's name.
         do {
-            check = true;
+            check = false;
             System.out.println("Holder's Name: ");
-            String name = console.next().trim();
-            if (name.isBlank()){
+            customer.setName(console.next().trim());
+            if (customer.getName().isBlank()){
+                check = true;
                 System.out.println("Wrong holder's name input, please enter again.");
-            }else {
-                customer.setName(name);
-                check = false;
             }
         } while (check);
 
@@ -136,13 +159,58 @@ public class Logic {
         while (check){
             System.out.println("Account type: 1.Savings , 2.Current");
             customer.setAccountType(console.next());
-            if (!(customer.getUsername().equals("1") || customer.getUsername().equals("2"))){
+            if (!(customer.getAccountType().equals("1") || customer.getAccountType().equals("2"))){
                 System.out.println("Wrong input. Enter 1.Savings , 2.Current");
             } else {
                 check = false;
             }
         }
 
+        // Sets starting balance.
+        do{
+            check = false;
+            try {
+                System.out.print("Starting Balance: ");
+                customer.setBalance(Integer.parseInt(console.next()));
+            } catch (NumberFormatException e){
+                System.out.println("Wrong input. Enters numbers only.");
+                check = true;
+            }
+        }while(check);
 
+        // Sets status of balance.
+        do {
+            check = false;
+            System.out.print("Status: 1. Active, 2. Inactive");
+            customer.setStatus(console.next());
+            if (!(customer.getStatus().equals("1") || customer.getStatus().equals("2"))){
+                System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
+                check = true;
+            }
+        }while(check);
+
+        // Assign last number account.
+        customer.setAccountNo(data.getLastAccountNumber() + 1);
+
+        // Appending customer to a file
+        data.AddToFile(customer, true);
+        System.out.printf("Account Successfully Created – the account number assigned is: %d%n", customer.getAccountNo());
     }
+
+    public void deleteAccount(){
+        Integer accNo = getValidNumber("Number account: ");
+        if(accNo != null){
+            Data data = new Data();
+            if (data.isInFile(accNo)){
+                Customer customer;
+                customer = data.getCustomer(accNo);
+                System.out.printf("You wish to delete the account held by Mr %s. If this information is correct please re-enter the account number:%n", customer.getUsername());
+                Scanner console = new Scanner(System.in);
+                int tempAccount = getValidNumber("Number account: ");
+                if (tempAccount == customer.getAccountNo())
+            }
+
+        }
+    }
+
 }
