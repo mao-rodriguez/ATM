@@ -63,11 +63,11 @@ public class Logic {
                 if (opt.equals("1")){
                     check = true;
                 } else {
-                    num = null;
-                    check = false;
+                    console.close();
+                    return null;
                 }
             }
-        }while (check);
+        } while (check);
         console.close();
         return num;
     }
@@ -199,18 +199,29 @@ public class Logic {
 
     public void deleteAccount(){
         Integer accNo = getValidNumber("Number account: ");
-        if(accNo != null){
-            Data data = new Data();
-            if (data.isInFile(accNo)){
-                Customer customer;
-                customer = data.getCustomer(accNo);
-                System.out.printf("You wish to delete the account held by Mr %s. If this information is correct please re-enter the account number:%n", customer.getUsername());
-                Scanner console = new Scanner(System.in);
-                int tempAccount = getValidNumber("Number account: ");
-                if (tempAccount == customer.getAccountNo())
-            }
+        // Checks if is a valid number.
+        if(accNo == null) return;
 
+        Data data = new Data();
+        // Checks if the account number is in file.
+        if (!(data.isInFile(accNo))){
+            System.out.printf("Account number %d does not exist.%n", accNo);
+            return;
         }
+
+        Customer customer;
+        customer = data.getCustomer(accNo);
+        System.out.printf("You wish to delete the account held by Mr %s. If this information is correct please re-enter the account number:%n", customer.getUsername());
+        Integer tempAccount = getValidNumber("Number account: ");
+        // Checks if the number typed match with the customer number account.
+        if (!(Integer.valueOf(customer.getAccountNo()).equals(tempAccount))){
+            System.out.println("No account was deleted.");
+            return;
+        }
+
+        data.deleteFromFile(customer);
+        System.out.println("Account delete successfully.");
+
     }
 
 }
