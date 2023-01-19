@@ -6,6 +6,7 @@ import DataLayer.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Logic {
 
@@ -23,11 +24,12 @@ public class Logic {
 
     // Method to verify if username is valid (username can only contain A-Z, a-z y 0-9)
     public boolean isValidUserName(String username){
+        if (username.isBlank()){
+            return false;
+        }
         char[] s = username.toCharArray();
         for (char c : s){
-            if((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')){
-                continue;
-            } else {
+            if(!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))){
                 return false;
             }
         }
@@ -97,6 +99,30 @@ public class Logic {
         return output;
     }
 
+    // Return a valid username.
+    private String getUsername(boolean update) {
+        Scanner console = new Scanner(System.in);
+        boolean check;
+        String username;
+        do {
+            check = false;
+            System.out.print("Username: ");
+            username = console.next();
+            if (update){
+                if (username.isBlank()){
+                    return username;
+                    // TODO: Check when user leaves username blank just in case it's and update. Creates a new method.
+                }
+            }
+            if (username.isBlank() || !isValidUserName(username)){
+                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
+                check = true;
+            }
+        } while (check);
+        console.close();
+        return username;
+    }
+
     // Disables an account.
     public void disableAccount(String username) throws JsonProcessingException {
         Data data = new Data();
@@ -113,24 +139,10 @@ public class Logic {
 
         System.out.println("--- Creating new account ---");
         // Check and set the username.
-        boolean check = true;
-        while (check){
-            System.out.println("Username: ");
-            String un = console.next();
-            customer.setUsername(EncryptionDecryption(un));
-            // Checks if the username typed is valid (Username can only contain A-Z, a-z & 0-9)
-            if (un == "" || !isValidUserName(un)){
-                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
-            } else if (data.isInFile(customer.getUsername())) {
-                System.out.println("Username is in use, enter again.");
-            } else {
-                check = false;
-            }
-        }
-
+        customer.setUsername(EncryptionDecryption(getUsername()));
 
         // Checks and set de PIN.
-        check = true;
+        boolean check = true;
         while (check){
             System.out.println("5 digit PIN: ");
             String pin = console.next();
@@ -223,5 +235,36 @@ public class Logic {
         System.out.println("Account delete successfully.");
 
     }
+
+    public void updateAccount(){
+        Integer accNo = getValidNumber("Number account: ");
+        // Checks if is a valid number.
+        if(accNo == null) return;
+
+        Data data = new Data();
+        // Checks if the account number is in file.
+        if (!(data.isInFile(accNo))){
+            System.out.printf("Account number %d does not exist.%n", accNo);
+            return;
+        }
+
+        Customer customer;
+        customer = data.getCustomer(accNo);
+        System.out.println(customer.toString());
+        System.out.println("Please enter in the fields you wish to update, leave blank otherwise.");
+
+        // Updating username.
+        boolean check;
+        do{
+            check = false;
+            customer.setUsername(EncryptionDecryption(getUsername()));
+            if (data.isInFile(customer.getUsername())) {
+                System.out.println("Username is in use. Enter again.");
+                check = true;
+            }
+        }while (check);
+
+    }
+
 
 }

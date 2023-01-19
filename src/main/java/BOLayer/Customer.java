@@ -66,4 +66,15 @@ public class Customer implements Serializable {
     public void setPin(String pin) {
         Pin = pin;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "Username='" + Username + '\'' +
+                ", Name='" + Name + '\'' +
+                ", AccountType='" + AccountType + '\'' +
+                ", Status='" + Status + '\'' +
+                ", AccountNo=" + AccountNo +
+                '}';
+    }
 }
