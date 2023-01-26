@@ -6,7 +6,6 @@ import DataLayer.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class Logic {
 
@@ -100,7 +99,7 @@ public class Logic {
     }
 
     // Return a valid username.
-    private String getUsername(boolean update) {
+    private String getUsername() {
         Scanner console = new Scanner(System.in);
         boolean check;
         String username;
@@ -108,13 +107,33 @@ public class Logic {
             check = false;
             System.out.print("Username: ");
             username = console.next();
-            if (update){
-                if (username.isBlank()){
-                    return username;
-                    // TODO: Check when user leaves username blank just in case it's and update. Creates a new method.
-                }
-            }
+
             if (username.isBlank() || !isValidUserName(username)){
+                System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
+                check = true;
+            }
+        } while (check);
+        console.close();
+        return username;
+    }
+
+    // Return a valid username. Used when user updating username.
+    private String getUsername(String currentUserName) {
+        Scanner console = new Scanner(System.in);
+        boolean check;
+        String username;
+        do {
+            check = false;
+            System.out.print("Username: ");
+            username = console.next();
+
+            if (username.isBlank()){
+                username = currentUserName;
+                console.close();
+                return username;
+            }
+
+            if(!isValidUserName(username)){
                 System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
                 check = true;
             }
@@ -148,7 +167,7 @@ public class Logic {
             String pin = console.next();
             customer.setPin(EncryptionDecryption(pin));
             // Checks if the PIN typed is valid (PIN is only 5 digit long and can only contain numbers from 0 to 9)
-            if (pin == "" || !isValidPin(pin)){
+            if (pin.equals("") || !isValidPin(pin)){
                 System.out.println("Please enter valid PIN (PIN is only 5 digit long and can only contain numbers from 0 to 9)");
             } else {
                 check = false;
@@ -209,7 +228,7 @@ public class Logic {
         System.out.printf("Account Successfully Created – the account number assigned is: %d%n", customer.getAccountNo());
     }
 
-    public void deleteAccount(){
+    public void deleteAccount() throws JsonProcessingException {
         Integer accNo = getValidNumber("Number account: ");
         // Checks if is a valid number.
         if(accNo == null) return;
@@ -257,7 +276,7 @@ public class Logic {
         boolean check;
         do{
             check = false;
-            customer.setUsername(EncryptionDecryption(getUsername()));
+            customer.setUsername(EncryptionDecryption(getUsername(customer.getUsername())));
             if (data.isInFile(customer.getUsername())) {
                 System.out.println("Username is in use. Enter again.");
                 check = true;
