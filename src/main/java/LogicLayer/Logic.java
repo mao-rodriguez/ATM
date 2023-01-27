@@ -22,7 +22,7 @@ public class Logic {
     }
 
     // Method to verify if username is valid (username can only contain A-Z, a-z y 0-9)
-    public boolean isValidUserName(String username){
+    private boolean isValidUserName(String username){
         if (username.isBlank()){
             return false;
         }
@@ -35,14 +35,12 @@ public class Logic {
         return true;
     }
 
-    public boolean isValidPin(String s){
+    private boolean isValidPin(String s){
         if(s.length() != 5){
             return false;
         }
         for (char c: s.toCharArray()) {
-            if(c >= '0' || c <= '9'){
-                continue;
-            } else {
+            if(!(c >= '0' && c <= '9')) {
                 return false;
             }
         }
@@ -51,10 +49,11 @@ public class Logic {
 
     // Guest the user to enter a valid number.
     private Integer getValidNumber(String msg){
-        Integer num = 0;
+        int num = 0;
         Scanner console = new Scanner(System.in);
-        boolean check = false;
+        boolean check ;
         do {
+            check = false;
             System.out.print(msg);
             try{
                 num = Integer.parseInt(console.next());
@@ -81,21 +80,21 @@ public class Logic {
     // 0123456789
     // 9876543210
     public String EncryptionDecryption(String username) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         char[] ch = username.toCharArray();
         for (char c : ch) {
 
             if(c >= 'A' && c <= 'Z'){
-                output += (char)('Z' - (c - 'A'));
+                output.append((char) ('Z' - (c - 'A')));
 
             } else if(c >= 'a' && c <= 'z'){
-                output += (char)('z' - (c - 'a'));
+                output.append((char) ('z' - (c - 'a')));
 
             } else if(c >= '0' && c <= '9'){
-                output += 9 - Character.getNumericValue(c);
+                output.append(9 - Character.getNumericValue(c));
             }
         }
-        return output;
+        return output.toString();
     }
 
     // Return a valid username.
