@@ -5,6 +5,7 @@ import BOLayer.Customer;
 import DataLayer.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Logic {
@@ -79,7 +80,7 @@ public class Logic {
     // For Number we have
     // 0123456789
     // 9876543210
-    public String EncryptionDecryption(String username) {
+    private String EncryptionDecryption(String username) {
         StringBuilder output = new StringBuilder();
         char[] ch = username.toCharArray();
         for (char c : ch) {
@@ -141,6 +142,53 @@ public class Logic {
         return username;
     }
 
+    private String getName() {
+        String name;
+        System.out.print("Holder's name: ");
+        Scanner console = new Scanner(System.in);
+        name = console.next();
+        if (name.isBlank()) {
+            console.close();
+            return null;
+        }
+        console.close();
+        return name;
+    }
+
+    private String getStatus(){
+        String status;
+        Scanner console = new Scanner(System.in);
+        boolean check;
+        do {
+            check = false;
+            System.out.print("Status: 1. Active, 2. Inactive");
+            status = console.next();
+            if (status != "" && !(status.equals("1") || status.equals("2"))){
+                System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
+                check = true;
+            }
+            if(status.equals("1") || status.equals("2")){
+                return status;
+            }
+        }while(check);
+        return null;
+    }
+
+    private String getValidAccountType() {
+        boolean check = true;
+        String accountType = null;
+        Scanner console = new Scanner(System.in);
+        while (check){
+            System.out.println("Account type: 1.Savings , 2.Current");
+            accountType = console.next();
+            if (!(accountType.equals("1") || accountType.equals("2"))){
+                System.out.println("Wrong input. Enter 1.Savings , 2.Current");
+            } else {
+                check = false;
+            }
+        }
+        return accountType;
+    }
     // Disables an account.
     public void disableAccount(String username) throws JsonProcessingException {
         Data data = new Data();
@@ -185,16 +233,7 @@ public class Logic {
         } while (check);
 
         // Checks and sets account type.
-        check = true;
-        while (check){
-            System.out.println("Account type: 1.Savings , 2.Current");
-            customer.setAccountType(console.next());
-            if (!(customer.getAccountType().equals("1") || customer.getAccountType().equals("2"))){
-                System.out.println("Wrong input. Enter 1.Savings , 2.Current");
-            } else {
-                check = false;
-            }
-        }
+        customer.setAccountType(getValidAccountType());
 
         // Sets starting balance.
         do{
@@ -227,6 +266,8 @@ public class Logic {
         System.out.printf("Account Successfully Created – the account number assigned is: %d%n", customer.getAccountNo());
     }
 
+
+
     public void deleteAccount() throws JsonProcessingException {
         Integer accNo = getValidNumber("Number account: ");
         // Checks if is a valid number.
@@ -254,7 +295,7 @@ public class Logic {
 
     }
 
-    public void updateAccount(){
+    public void updateAccount() throws JsonProcessingException {
         Integer accNo = getValidNumber("Number account: ");
         // Checks if is a valid number.
         if(accNo == null) return;
@@ -281,6 +322,54 @@ public class Logic {
                 check = true;
             }
         }while (check);
+
+        // Updating PIN.
+        do{
+            check = false;
+            System.out.println("5 digit PIN: ");
+            String pin = String.valueOf(getValidNumber("5 digit PIN: "));
+            customer.setPin(EncryptionDecryption(pin));
+            // Checks if the PIN typed is valid (PIN is only 5 digit long and can only contain numbers from 0 to 9)
+            if (pin.equals("") || !isValidPin(pin)){
+                System.out.println("Please enter valid PIN (PIN is only 5 digit long and can only contain numbers from 0 to 9)");
+                check = true;
+            }
+        }while(check);
+
+        // Updating the holder's name.
+        String name = getName();
+        if(name != null){
+            customer.setName(name);
+        }
+
+        // Updating the account status.
+        String status = getStatus();
+        if(status != null){
+            customer.setStatus(status);
+        }
+
+        data.updateInFile(customer);
+        System.out.printf("Account #%d has been successfully updated. ", customer.getAccountNo());
+    }
+
+    // Search account information
+    public void SearchAccount(){
+        Customer customer = new Customer();
+        System.out.println("--- SEARCH MENU ---");
+        System.out.println("Please enter in the fields you wish to include in search (leave blank otherwise): ");
+
+        // Getting Account Number and applying checks
+        customer.setAccountNo(getValidNumber("Account number: "));
+
+        // Username
+        customer.setUsername(EncryptionDecryption(getUsername()));
+
+        // Get holder's name
+        customer.setName(getName());
+
+        // Getting account list from file
+        Data data = new Data();
+        ArrayList<Customer> customerlist = data.ReadFile("customer", Customer.class);
 
     }
 
