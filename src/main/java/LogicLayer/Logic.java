@@ -65,7 +65,7 @@ public class Logic {
                     check = true;
                 } else {
                     console.close();
-                    return null;
+                    return 0;
                 }
             }
         } while (check);
@@ -370,6 +370,42 @@ public class Logic {
         // Getting account list from file
         Data data = new Data();
         ArrayList<Customer> customerlist = data.ReadFile("customer", Customer.class);
+
+        ArrayList<Customer> outList = new ArrayList<Customer>();
+        if(customerlist.size() > 0){
+            for(Customer c : customerlist){
+                if(customer.getAccountNo() == 0){
+                    customer.setAccountNo(c.getAccountNo());
+                }
+                if(customer.getUsername().isBlank()){
+                    customer.setUsername(c.getUsername());
+                }
+                if(customer.getName().isBlank()){
+                    customer.setName(c.getName());
+                }
+
+                if(
+                        customer.getAccountNo() == c.getAccountNo() &&
+                        customer.getUsername() == c.getUsername() &&
+                        customer.getName() == c.getName()
+                ){
+                    outList.add(c);
+                }
+            }
+
+            // Printing the results
+            if(outList.size() > 0){
+                System.out.format("| %-10s | %-10s | %-10s |%n", "# Account", "Username", "Holder's name");
+                for(Customer c : outList){
+                    System.out.format("| %-10d | %-10s | %-10s |%n", c.getAccountNo(), c.getUsername(), c.getName());
+                }
+            } else{
+                System.out.println("***NO DATA FOUND MATCHING WITH GIVEN DETAILS***");
+            }
+        } else{
+            System.out.println("***NO ACCOUNT STORED.***");
+        }
+
 
     }
 
