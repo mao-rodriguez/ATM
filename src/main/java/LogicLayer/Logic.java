@@ -2,11 +2,12 @@ package LogicLayer;
 
 import BOLayer.Admin;
 import BOLayer.Customer;
+import BOLayer.Transaction;
 import DataLayer.Data;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class Logic {
 
@@ -163,7 +164,7 @@ public class Logic {
             check = false;
             System.out.print("Status: 1. Active, 2. Inactive");
             status = console.next();
-            if (status != "" && !(status.equals("1") || status.equals("2"))){
+            if (!status.equals("") && !(status.equals("1") || status.equals("2"))){
                 System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
                 check = true;
             }
@@ -190,7 +191,7 @@ public class Logic {
         return accountType;
     }
     // Disables an account.
-    public void disableAccount(String username) throws JsonProcessingException {
+    public void disableAccount(String username) {
         Data data = new Data();
         Customer customer = data.getCustomer(username);
         customer.setStatus("Disable");
@@ -268,7 +269,7 @@ public class Logic {
 
 
 
-    public void deleteAccount() throws JsonProcessingException {
+    public void deleteAccount() {
         Integer accNo = getValidNumber("Number account: ");
         // Checks if is a valid number.
         if(accNo == null) return;
@@ -295,7 +296,7 @@ public class Logic {
 
     }
 
-    public void updateAccount() throws JsonProcessingException {
+    public void updateAccount() {
         Integer accNo = getValidNumber("Number account: ");
         // Checks if is a valid number.
         if(accNo == null) return;
@@ -371,7 +372,7 @@ public class Logic {
         Data data = new Data();
         ArrayList<Customer> customerlist = data.ReadFile("customer", Customer.class);
 
-        ArrayList<Customer> outList = new ArrayList<Customer>();
+        ArrayList<Customer> outList = new ArrayList<>();
         if(customerlist.size() > 0){
             for(Customer c : customerlist){
                 if(customer.getAccountNo() == 0){
@@ -386,8 +387,8 @@ public class Logic {
 
                 if(
                         customer.getAccountNo() == c.getAccountNo() &&
-                        customer.getUsername() == c.getUsername() &&
-                        customer.getName() == c.getName()
+                        Objects.equals(customer.getUsername(), c.getUsername()) &&
+                        customer.getName().equals(c.getName())
                 ){
                     outList.add(c);
                 }
@@ -405,9 +406,183 @@ public class Logic {
         } else{
             System.out.println("***NO ACCOUNT STORED.***");
         }
+    }
+
+    // ******** CUSTOMER LOGIC ********
+
+    // Method to withdraw cash
+
+    // Method to make a transaction and record in the file
+    // To be used in CashWithdraw() & CashTransfer() & CashDeposit()
+
+    public Transaction makeTransaction(Customer c, int amount, String type){
+        // Adding data to Transaction variable for Sender
+        Transaction transaction = new Transaction();
+        transaction.setAccountNo(c.getAccountNo());
+        transaction.setUserName(c.getUsername());
+        transaction.setHoldersName(c.getName());
+        transaction.setTransactionType(type);
+        transaction.setTransactionAmount(amount);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        transaction.setDate(now.format(formatter));
+        transaction.setBalance(c.getBalance());
+        // Appending transaction in transactions.txt
+        Data data = new Data();
+        data.AddToFile(transaction, true);
+        return transaction;
+    }
+
+    public void CashWithdraw(String username) {
+        System.out.println("----- Withdraw Cash -----");
+
+        String msg = "1---Fast Cash".concat(System.lineSeparator()).concat("2---Normal Cash");
+        int option = getValidNumber(msg);
+        if (!(option == 1 || option == 2)) {
+            System.out.println("Exiting cash withdraw");
+            return;
+        }
+
+        Scanner console = new Scanner(System.in);
+        switch (option) {
+            // In case of Fast Cash
+            case 1: {
+                System.out.println("\\033[H\\033[2J");
+                System.out.println("==== FAST CASH ====");
+                // Putting all possible choices of Fast Cash in a list
+                List<Integer> fastCashOptions = Arrays.asList(100000, 200000, 300000, 400000, 500000, 600000);
+                // Printing all possible choices
+                System.out.printf(
+                        "1 --- $%,d%n" +
+                                "2 --- $%,d%n" +
+                                "3 --- $%,d%n" +
+                                "4 --- $%,d%n" +
+                                "5 --- $%,d%n" +
+                                "6 --- $%,d%n",
+                        fastCashOptions.get(0),
+                        fastCashOptions.get(1),
+                        fastCashOptions.get(2),
+                        fastCashOptions.get(3),
+                        fastCashOptions.get(4),
+                        fastCashOptions.get(5));
+
+                // Getting input that which denomination the user want
+                int opt = getValidNumber("Press the amount to withdraw");
+                if (!(opt >= 1 && opt <= 6)) {
+                    System.out.println("Wrong input. Exiting cash withdraw");
+                    return;
+                }
+                System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", fastCashOptions.get(opt - 1));
+                if (!(console.next().equalsIgnoreCase("Y"))) {
+                    System.out.println("Transaction was not confirmed.");
+                    return;
+                }
+                Data data = new Data();
+                Customer customer = data.getCustomer(username);
+                int totalAmount = data.todayTransactionsAmount(customer.getAccountNo());
+                if ((totalAmount + fastCashOptions.get(opt - 1) >= 6000001)) {
+                    System.out.printf("You have already withdrawn $%,d today.%n" +
+                            "Cannot withdrawn more than $6000,000 on same day.", totalAmount);
+                    return;
+                }
+                // Checking if user has sufficient balance
+                if (!(customer.getBalance() > fastCashOptions.get(opt - 1))) {
+                    System.out.println("Insufficent Balance. Transaction failed!");
+                    return;
+                }
+                // Doing the transaction
+                data.deductBalance(customer, fastCashOptions.get(opt - 1));
+                System.out.println("Cash Successfully Withdrawn!");
+                // Making and recording transaction to file
+                Transaction transaction = makeTransaction(customer, fastCashOptions.get(opt - 1), "Cash Withdrawl");
+                // Asking if user wants a receipt
+                System.out.println("Do you wish to print a receipt(Y/N)? ");
+                if (console.next().equals("Y")) {
+                    printReceipt(transaction, "Withdrawn");
+                }
+            }
+            break;
+            case 2:
+                // In case of Normal Cash
+                System.out.println("\\033[H\\033[2J");
+                System.out.println("==== FAST CASH ====");
+                int amount = getValidNumber("Enter the withdrawal amount: ");
+                System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", amount);
+                if (!(console.next().equals("Y"))) {
+                    System.out.println("Transaction was not confirmed.");
+                    return;
+                }
+                Data data = new Data();
+                Customer customer = data.getCustomer(username);
+                int totalAmount = data.todayTransactionsAmount(customer.getAccountNo());
+                if ((totalAmount + amount >= 6000001)) {
+                    System.out.printf("You have already withdrawn $%,d today.%n" +
+                            "Cannot withdrawn more than $6000,000 on same day.", totalAmount);
+                    return;
+                }
+                // Checking if user has sufficient balance
+                if (!(customer.getBalance() > amount)) {
+                    System.out.println("Insufficient Balance. Transaction failed!");
+                    return;
+                }
+                // Doing the transaction
+                data.deductBalance(customer, amount);
+                System.out.println("Cash Successfully Withdrawn!");
+                // Making and recording transaction to file
+                Transaction transaction = makeTransaction(customer, amount, "Cash Withdrawl");
+                // Asking if user wants a receipt
+                System.out.println("Do you wish to print a receipt(Y/N)? ");
+                if (console.next().equalsIgnoreCase("Y")) {
+                    printReceipt(transaction, "Withdrawn");
+                }
+            break;
+        }
+    }
+
+    public void cashTransfer(String username){
+        Data data = new Data();
+        Customer sender;
+        sender = data.getCustomer(username);
+        System.out.println("----- Transfer Cash -----");
+        int amount = getValidNumber("Enter amount for transfer: ");
+        if(amount > sender.getBalance()){
+            System.out.println("Insufficient balance: ");
+            return;
+        }
+        int accNo = getValidNumber("Enter the account number to which you want to transfer: ");
+        if(accNo == 0){
+            System.out.println("Invalid number account number.");
+            return;
+        }
+        if(!data.isInFile(accNo)){
+            System.out.println("User doesn't exists.");
+            return;
+        }
+        Customer receiver = data.getCustomer(accNo);
 
 
     }
 
+    // Method to display balance
+    public void displayBalance(String username){
+        Data data = new Data();
+        Customer customer;
+        customer = data.getCustomer(username);
+        System.out.printf("Account # %d%n", customer.getAccountNo());
+        // Getting today's date and putting it in a string
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String date = now.format(formatter);
+        System.out.printf("Date # %s%n", date);
+        System.out.printf("Balance: %d%n", customer.getBalance());
+    }
+    // Method to Print Receipt
 
+    // To be used in WithdrawCash() & CashTransfer() & DepositCash()
+    public void printReceipt(Transaction transaction, String t){
+        System.out.printf("Account # %d%n", transaction.getAccountNo());
+        System.out.printf("Date %s%n", transaction.getDate());
+        System.out.printf("%s: %d", t, transaction.getTransactionAmount());
+        System.out.printf("%s: %d", t, transaction.getBalance());
+    }
 }

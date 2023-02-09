@@ -2,6 +2,7 @@ package BOLayer;
 
 public class Transaction {
     private int AccountNo;
+    private String UserName;
     private String HoldersName;
     private String TransactionType;
     private int TransactionAmount;
@@ -54,5 +55,13 @@ public class Transaction {
 
     public void setBalance(int balance) {
         Balance = balance;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
     }
 }

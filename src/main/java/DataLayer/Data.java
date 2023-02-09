@@ -10,7 +10,6 @@ import java.util.List;
 import BOLayer.Admin;
 import BOLayer.Customer;
 import BOLayer.Transaction;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -31,7 +30,7 @@ public class Data {
     }
 
 //     Clears last data and save new list to file in json format
-    public <T> void saveToFile(ArrayList<T> list) throws JsonProcessingException {
+    public <T> void saveToFile(ArrayList<T> list) {
         if(list.get(0) instanceof Admin){
             AddToFile(list.get(0), false);
         }
@@ -59,7 +58,6 @@ public class Data {
     }
 
     public <T> ArrayList ReadFile(String fileName, Class<T> c) {
-        // TODO: How to pass a class as parameter method
         List<String> lines;
         ArrayList<T> list = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -77,7 +75,7 @@ public class Data {
 
 
     // Deletes a customer object from a file.
-    public void deleteFromFile(Customer customer) throws JsonProcessingException {
+    public void deleteFromFile(Customer customer) {
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         // Check if the customer is in file and remove
         for (Customer item : list){
@@ -91,7 +89,7 @@ public class Data {
     }
 
     // Updates a customer object in the file.
-    public void updateInFile(Customer customer) throws JsonProcessingException {
+    public void updateInFile(Customer customer) {
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         // Check if the customer is in the file and update.
         for (int i = 0; i < list.size(); i++) {
@@ -182,7 +180,7 @@ public class Data {
     }
 
     // Deduct amount from balance and update it in file
-    public void deductBalance(Customer c, int amount) throws JsonProcessingException {
+    public void deductBalance(Customer c, int amount) {
         int balance = c.getBalance();
         balance -= amount;
         c.setBalance(balance);
@@ -190,7 +188,7 @@ public class Data {
     }
 
     // Add amount to balance of an account and update it in file
-    public void addAmount(Customer c, int amount) throws JsonProcessingException {
+    public void addAmount(Customer c, int amount) {
         int balance = c.getBalance();
         balance += amount;
         c.setBalance(balance);
