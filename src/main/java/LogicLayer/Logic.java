@@ -50,7 +50,7 @@ public class Logic {
     }
 
     // Guest the user to enter a valid number.
-    private Integer getValidNumber(String msg){
+    public Integer getValidNumber(String msg){
         int num = 0;
         Scanner console = new Scanner(System.in);
         boolean check ;
@@ -81,7 +81,7 @@ public class Logic {
     // For Number we have
     // 0123456789
     // 9876543210
-    private String EncryptionDecryption(String username) {
+    public String EncryptionDecryption(String username) {
         StringBuilder output = new StringBuilder();
         char[] ch = username.toCharArray();
         for (char c : ch) {
@@ -529,7 +529,7 @@ public class Logic {
                 data.deductBalance(customer, amount);
                 System.out.println("Cash Successfully Withdrawn!");
                 // Making and recording transaction to file
-                Transaction transaction = makeTransaction(customer, amount, "Cash Withdrawl");
+                Transaction transaction = makeTransaction(customer, amount, "Cash Withdrawal");
                 // Asking if user wants a receipt
                 System.out.println("Do you wish to print a receipt(Y/N)? ");
                 if (console.next().equalsIgnoreCase("Y")) {
@@ -559,6 +559,51 @@ public class Logic {
             return;
         }
         Customer receiver = data.getCustomer(accNo);
+        System.out.printf("Confirm deposit $%d in account held by Mr.%s.%n"+"Please re-enter account number to confirm", amount, receiver.getName());
+        int accNo2 = getValidNumber("Enter the account number to which you want to transfer: ");
+        if(accNo2 == 0){
+            System.out.println("Invalid number account number.");
+            return;
+        }
+        if(accNo == accNo2){
+            // Deduct amount from Sender's account
+            data.deductBalance(sender, amount);
+            // Add amount to receiver's account
+            data.addAmount(receiver, amount);
+            System.out.println("Transaction confirmed!");
+            // Making and recording transaction to file for Sender
+            Transaction transaction = makeTransaction(sender, amount, "Cash Transfer");
+            // Making and recording transaction to file for Receiver
+            Transaction transaction1 = makeTransaction(receiver, amount, "Cash Transfer");
+
+            // Asking if user wants a receipt
+            System.out.println("Do you wish to print a receipt(Y/N)? ");
+            Scanner console = new Scanner("System.io");
+            if (console.next().equalsIgnoreCase("Y")) {
+                printReceipt(transaction, "Amount Transferred");
+            }
+        }
+    }
+
+    // Method to make a Deposit
+    public void cashDeposit(String username){
+        Data data = new Data();
+        Customer customer = data.getCustomer(username);
+        System.out.println("----- Deposit Cash -----");
+        int amount = getValidNumber("Enter amount to deposit: ");
+        // Add amount to the account
+        data.addAmount(customer, amount);
+        System.out.println("Cash Deposited Successfully.");
+
+        // Making and recording transaction to file for Sender
+        Transaction transaction = makeTransaction(customer, amount, "Cash Deposit.");
+
+        // Asking if user wants a receipt
+        System.out.println("Do you wish to print a receipt(Y/N)? ");
+        Scanner console = new Scanner("System.io");
+        if (console.next().equalsIgnoreCase("Y")) {
+            printReceipt(transaction, "Amount Deposited.");
+        }
 
 
     }
