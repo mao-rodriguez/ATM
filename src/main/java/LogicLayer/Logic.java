@@ -24,7 +24,7 @@ public class Logic {
     }
 
     // Method to verify if username is valid (username can only contain A-Z, a-z y 0-9)
-    private boolean isValidUserName(String username){
+    public boolean isValidUserName(String username){
         if (username.isBlank()){
             return false;
         }

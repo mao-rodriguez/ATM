@@ -4,6 +4,8 @@ import BOLayer.Admin;
 import BOLayer.Customer;
 import LogicLayer.Logic;
 
+import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class View {
@@ -55,16 +57,61 @@ public class View {
             case 2:
                 System.out.printf("-----Customer Login-----%n" + "Please Enter your username & 5-digit Pin");
                 // Declaring a customer object
-                Scanner console = new Scanner(System.in);
                 Customer customer = new Customer();
+                Scanner console = new Scanner(System.in);
+
+                // Reading and storing username and PIN.
+                System.out.print("Username: ");
+                customer.setUsername(console.next());
+                System.out.print("PIN: ");
+                customer.setPin(console.next());
+                // Doing encryption
+                customer.setUsername(logic.EncryptionDecryption(customer.getUsername()));
+                customer.setPin(logic.EncryptionDecryption(customer.getPin()));
+
+                if(!logic.isValidUserName(customer.getUsername())){
+                    System.out.println("Invalid Username input. Enter again");
+                    return;
+                }
+
                 boolean isSigned = true;
                 int attempt = 0;
-                while (attempt <= 3){
-
-
-
+                while (attempt < 3){
+                    if(logic.canLogin(customer)){
+                        System.out.println("--- Logged in as Customer ---");
+                        customerScreen(customer.getUsername());
+                        break;
+                    }
+                    if(!logic.canLogin(customer)){
+                        System.out.println("Invalid Username/PIN or user is disabled");
+                        attempt++;
+                    }
+                    if(attempt == 3){
+                        logic.disableAccount(customer.getUsername());
+                        System.out.println("Wrong input 3 times. Account is disabled!");
+                    }
                 }
         }
 
+    }
+
+    public void adminScreen(){
+        clearConsole();
+
+    }
+
+    private static void clearConsole() {
+        try {
+            if(System.getProperty("os.name").contains("Windows")){
+                // Clear console in Windows.
+                new ProcessBuilder("cmd","/c", "cls").inheritIO().start().waitFor();
+            } else {
+                // Clear console in linux, Unix, Mac os.
+                System.out.println("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (IOException | InterruptedException  e) {
+            throw new RuntimeException(e);
+        }
     }
 }
