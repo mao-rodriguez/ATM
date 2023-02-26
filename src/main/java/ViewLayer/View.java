@@ -5,7 +5,6 @@ import BOLayer.Customer;
 import LogicLayer.Logic;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class View {
@@ -96,8 +95,93 @@ public class View {
     }
 
     public void adminScreen(){
-        clearConsole();
+        boolean validInput;
+        int option = 0;
+        Logic logic = new Logic();
+        do{
+            validInput = true;
+            clearConsole();
+            System.out.println("-----Admin Menu-----");
+            System.out.println("1----Create New Account\n" +
+                    "2----Delete Existing Account\n" +
+                    "3----Update Account Information\n" +
+                    "4----Search for Account\n" +
+                    "5----Exit");
+            option = logic.getValidNumber("Enter option: ");
+            if(option < 1 || option > 5){
+                System.out.println("Invalid input. Try again.");
+                validInput = false;
+            }
+        }while (!validInput);
 
+        boolean continuing = true;
+        do{
+            switch (option){
+                case 1:
+                    logic.createAccount();
+                case 2:
+                    logic.deleteAccount();
+                case 3:
+                    logic.updateAccount();
+                case 4:
+                    logic.searchAccount();
+                case 5:
+                    // Terminate the JVM with a status code of 0
+                    System.exit(0);
+            }
+            System.out.println("Do you want to continue(Y/N): ");
+            Scanner console = new Scanner(System.in);
+            String check = console.next();
+            if(check.equalsIgnoreCase("N")){
+                continuing = false;
+            }
+        }while (continuing);
+        System.exit(0);
+    }
+
+    public void customerScreen(String username){
+        boolean validInput;
+        int option = 0;
+        Logic logic = new Logic();
+        do{
+            validInput = true;
+            clearConsole();
+            System.out.println("-----Customer Menu-----");
+            System.out.println("1----Withdraw Cash\n" +
+                    "2----Cash Transfer\n" +
+                    "3----Deposit Cash\n" +
+                    "4----Display Balance\n" +
+                    "5----Exit");
+            option = logic.getValidNumber("Enter option: ");
+            if(option < 1 || option > 5){
+                System.out.println("Invalid input. Try again.");
+                validInput = false;
+            }
+        }while (!validInput);
+
+        boolean continuing = true;
+        do{
+            switch (option){
+                case 1:
+                    logic.cashWithdraw(username);
+                case 2:
+                    logic.cashTransfer(username);
+                case 3:
+                    logic.cashDeposit(username);
+                case 4:
+                    logic.displayBalance(username);
+                case 5:
+                    // Terminate the JVM with a status code of 0
+                    System.exit(0);
+            }
+            System.out.println("Do you want to continue(Y/N): ");
+            Scanner console = new Scanner(System.in);
+            String check = console.next();
+            if(check.equalsIgnoreCase("N")){
+                continuing = false;
+            }
+        }while (continuing);
+        System.exit(0);
     }
 
     private static void clearConsole() {

@@ -354,7 +354,7 @@ public class Logic {
     }
 
     // Search account information
-    public void SearchAccount(){
+    public void searchAccount(){
         Customer customer = new Customer();
         System.out.println("--- SEARCH MENU ---");
         System.out.println("Please enter in the fields you wish to include in search (leave blank otherwise): ");
@@ -433,7 +433,7 @@ public class Logic {
         return transaction;
     }
 
-    public void CashWithdraw(String username) {
+    public void cashWithdraw(String username) {
         System.out.println("----- Withdraw Cash -----");
 
         String msg = "1---Fast Cash".concat(System.lineSeparator()).concat("2---Normal Cash");
