@@ -5,12 +5,13 @@ public class Admin implements Serializable{
     private String Username;
     private String Pin;
 
-    public Admin(String username, String pin) {
-        Username = username;
-        Pin = pin;
+    public Admin(String username, String pin){
+        setUsername(username);
+        setPin(pin);
     }
 
     public Admin() {
+
     }
 
     public String getUsername() {
