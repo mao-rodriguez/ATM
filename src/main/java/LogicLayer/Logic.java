@@ -58,19 +58,17 @@ public class Logic {
             check = false;
             System.out.print(msg);
             try{
-                num = Integer.parseInt(console.next());
+                num = Integer.parseInt(console.nextLine());
             } catch (NumberFormatException e) {
                 System.out.print("Invalid input, want to try again?. 1. Yes , 2. No: ");
-                String opt = console.next();
+                String opt = console.nextLine();
                 if (opt.equals("1")){
                     check = true;
                 } else {
-                    console.close();
                     return 0;
                 }
             }
         } while (check);
-        console.close();
         return num;
     }
 
@@ -107,14 +105,13 @@ public class Logic {
         do {
             check = false;
             System.out.print("Username: ");
-            username = console.next();
+            username = console.nextLine();
 
             if (username.isBlank() || !isValidUserName(username)){
                 System.out.println("Please enter valid username (Username can only contain A-Z, a-z & 0-9)");
                 check = true;
             }
         } while (check);
-        console.close();
         return username;
     }
 
@@ -126,11 +123,10 @@ public class Logic {
         do {
             check = false;
             System.out.print("Username: ");
-            username = console.next();
+            username = console.nextLine();
 
             if (username.isBlank()){
                 username = currentUserName;
-                console.close();
                 return username;
             }
 
@@ -139,7 +135,6 @@ public class Logic {
                 check = true;
             }
         } while (check);
-        console.close();
         return username;
     }
 
@@ -147,12 +142,10 @@ public class Logic {
         String name;
         System.out.print("Holder's name: ");
         Scanner console = new Scanner(System.in);
-        name = console.next();
+        name = console.nextLine();
         if (name.isBlank()) {
-            console.close();
             return null;
         }
-        console.close();
         return name;
     }
 
@@ -163,7 +156,7 @@ public class Logic {
         do {
             check = false;
             System.out.print("Status: 1. Active, 2. Inactive");
-            status = console.next();
+            status = console.nextLine();
             if (!status.equals("") && !(status.equals("1") || status.equals("2"))){
                 System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
                 check = true;
@@ -180,8 +173,8 @@ public class Logic {
         String accountType = null;
         Scanner console = new Scanner(System.in);
         while (check){
-            System.out.println("Account type: 1.Savings , 2.Current");
-            accountType = console.next();
+            System.out.print("Account type: 1.Savings , 2.Current: ");
+            accountType = console.nextLine();
             if (!(accountType.equals("1") || accountType.equals("2"))){
                 System.out.println("Wrong input. Enter 1.Savings , 2.Current");
             } else {
@@ -211,8 +204,8 @@ public class Logic {
         // Checks and set de PIN.
         boolean check = true;
         while (check){
-            System.out.println("5 digit PIN: ");
-            String pin = console.next();
+            System.out.print("5 digit PIN: ");
+            String pin = console.nextLine();
             customer.setPin(EncryptionDecryption(pin));
             // Checks if the PIN typed is valid (PIN is only 5 digit long and can only contain numbers from 0 to 9)
             if (pin.equals("") || !isValidPin(pin)){
@@ -225,8 +218,8 @@ public class Logic {
         // Checks and sets the holder's name.
         do {
             check = false;
-            System.out.println("Holder's Name: ");
-            customer.setName(console.next().trim());
+            System.out.print("Holder's Name: ");
+            customer.setName(console.nextLine().trim());
             if (customer.getName().isBlank()){
                 check = true;
                 System.out.println("Wrong holder's name input, please enter again.");
@@ -241,7 +234,7 @@ public class Logic {
             check = false;
             try {
                 System.out.print("Starting Balance: ");
-                customer.setBalance(Integer.parseInt(console.next()));
+                customer.setBalance(Integer.parseInt(console.nextLine()));
             } catch (NumberFormatException e){
                 System.out.println("Wrong input. Enters numbers only.");
                 check = true;
@@ -251,14 +244,15 @@ public class Logic {
         // Sets status of balance.
         do {
             check = false;
-            System.out.print("Status: 1. Active, 2. Inactive");
-            customer.setStatus(console.next());
+            System.out.print("Status: 1. Active, 2. Inactive: ");
+            String status = console.nextLine();
+            customer.setStatus(status);
             if (!(customer.getStatus().equals("1") || customer.getStatus().equals("2"))){
-                System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
+                System.out.println("Wrong input. Enter 1. Active, 2. Inactive");
                 check = true;
             }
         }while(check);
-
+// TODO: FIX WHEN CUSTOMER FILE IS EMPTY OR NOT EXIST.
         // Assign last number account.
         customer.setAccountNo(data.getLastAccountNumber() + 1);
 
@@ -473,7 +467,7 @@ public class Logic {
                     return;
                 }
                 System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", fastCashOptions.get(opt - 1));
-                if (!(console.next().equalsIgnoreCase("Y"))) {
+                if (!(console.nextLine().equalsIgnoreCase("Y"))) {
                     System.out.println("Transaction was not confirmed.");
                     return;
                 }
@@ -497,7 +491,7 @@ public class Logic {
                 Transaction transaction = makeTransaction(customer, fastCashOptions.get(opt - 1), "Cash Withdrawl");
                 // Asking if user wants a receipt
                 System.out.println("Do you wish to print a receipt(Y/N)? ");
-                if (console.next().equals("Y")) {
+                if (console.nextLine().equals("Y")) {
                     printReceipt(transaction, "Withdrawn");
                 }
             }
@@ -508,7 +502,7 @@ public class Logic {
                 System.out.println("==== FAST CASH ====");
                 int amount = getValidNumber("Enter the withdrawal amount: ");
                 System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", amount);
-                if (!(console.next().equals("Y"))) {
+                if (!(console.nextLine().equals("Y"))) {
                     System.out.println("Transaction was not confirmed.");
                     return;
                 }
@@ -532,7 +526,7 @@ public class Logic {
                 Transaction transaction = makeTransaction(customer, amount, "Cash Withdrawal");
                 // Asking if user wants a receipt
                 System.out.println("Do you wish to print a receipt(Y/N)? ");
-                if (console.next().equalsIgnoreCase("Y")) {
+                if (console.nextLine().equalsIgnoreCase("Y")) {
                     printReceipt(transaction, "Withdrawn");
                 }
             break;
@@ -573,13 +567,11 @@ public class Logic {
             System.out.println("Transaction confirmed!");
             // Making and recording transaction to file for Sender
             Transaction transaction = makeTransaction(sender, amount, "Cash Transfer");
-            // Making and recording transaction to file for Receiver
-            Transaction transaction1 = makeTransaction(receiver, amount, "Cash Transfer");
 
             // Asking if user wants a receipt
             System.out.println("Do you wish to print a receipt(Y/N)? ");
             Scanner console = new Scanner("System.io");
-            if (console.next().equalsIgnoreCase("Y")) {
+            if (console.nextLine().equalsIgnoreCase("Y")) {
                 printReceipt(transaction, "Amount Transferred");
             }
         }
@@ -601,7 +593,7 @@ public class Logic {
         // Asking if user wants a receipt
         System.out.println("Do you wish to print a receipt(Y/N)? ");
         Scanner console = new Scanner("System.io");
-        if (console.next().equalsIgnoreCase("Y")) {
+        if (console.nextLine().equalsIgnoreCase("Y")) {
             printReceipt(transaction, "Amount Deposited.");
         }
 

@@ -11,19 +11,6 @@ public class Customer implements Serializable {
     private int AccountNo;
     private String Pin;
 
-    public Customer(String username, String name, String accountType, int balance, String status, int accountNo, String pin) {
-        Username = username;
-        Name = name;
-        AccountType = accountType;
-        Balance = balance;
-        Status = status;
-        AccountNo = accountNo;
-        Pin = pin;
-    }
-
-    public Customer(){
-    }
-
     public String getUsername() {
         return Username;
     }

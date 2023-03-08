@@ -116,7 +116,7 @@ public class Data {
     public boolean isInFile(String username){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         for (Customer customer : list){
-            if(customer.getUsername() == username){
+            if(customer.getUsername().equals(username)){
                 return true;
             }
         }

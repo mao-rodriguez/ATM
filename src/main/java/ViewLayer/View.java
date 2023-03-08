@@ -15,27 +15,29 @@ public class View {
                 "2----Customer%n");
         Logic logic = new Logic();
         int user = logic.getValidNumber("Enter 1 or 2: ");
-        if(user != 1 || user != 2){
+        if(user < 1 || user > 2){
             System.out.println("Invalid input user");
             return;
         }
-        switch (user){
-            case 1: {
-                System.out.printf("-----Administrator Login-----%n" + "Please Enter your username & 5-digit Pin");
+        switch (user) {
+            case 1 -> {
+                System.out.printf("-----Administrator Login-----%n" + "Please Enter your username & 5-digit Pin%n");
                 // Declaring an Admin object
                 Scanner console = new Scanner(System.in);
                 Admin admin = new Admin();
                 boolean isSigned = true;
                 while (isSigned) {
                     // Reading and storing username
-                    System.out.println("Username: ");
-                    admin.setUsername(console.next());
+                    System.out.print("Username: ");
+                    String username = console.nextLine();
+                    admin.setUsername(username);
                     // Applying encryption
                     admin.setUsername(logic.EncryptionDecryption(admin.getUsername()));
 
                     // Reading and storing pin.
-                    System.out.println("PIN: ");
-                    admin.setPin(console.next());
+                    System.out.print("PIN: ");
+                    String pin = console.nextLine();
+                    admin.setPin(pin);
                     // Applying encryption
                     admin.setPin(logic.EncryptionDecryption(admin.getPin()));
 
@@ -50,10 +52,10 @@ public class View {
                 // As successfully signedin, displaying admin screen
                 adminScreen();
             }
-                break;
+
 
             // Case 2 for Customer Login
-            case 2:
+            case 2 -> {
                 System.out.printf("-----Customer Login-----%n" + "Please Enter your username & 5-digit Pin");
                 // Declaring a customer object
                 Customer customer = new Customer();
@@ -61,52 +63,53 @@ public class View {
 
                 // Reading and storing username and PIN.
                 System.out.print("Username: ");
-                customer.setUsername(console.next());
+                String username = console.nextLine();
+                customer.setUsername(username);
                 System.out.print("PIN: ");
-                customer.setPin(console.next());
+                String pin = console.nextLine();
+                customer.setPin(pin);
                 // Doing encryption
                 customer.setUsername(logic.EncryptionDecryption(customer.getUsername()));
                 customer.setPin(logic.EncryptionDecryption(customer.getPin()));
-
-                if(!logic.isValidUserName(customer.getUsername())){
+                if (!logic.isValidUserName(customer.getUsername())) {
                     System.out.println("Invalid Username input. Enter again");
                     return;
                 }
-
-                boolean isSigned = true;
                 int attempt = 0;
-                while (attempt < 3){
-                    if(logic.canLogin(customer)){
+                while (attempt < 3) {
+                    if (logic.canLogin(customer)) {
                         System.out.println("--- Logged in as Customer ---");
                         customerScreen(customer.getUsername());
                         break;
                     }
-                    if(!logic.canLogin(customer)){
+                    if (!logic.canLogin(customer)) {
                         System.out.println("Invalid Username/PIN or user is disabled");
                         attempt++;
                     }
-                    if(attempt == 3){
+                    if (attempt == 3) {
                         logic.disableAccount(customer.getUsername());
                         System.out.println("Wrong input 3 times. Account is disabled!");
                     }
                 }
+            }
         }
 
     }
 
     public void adminScreen(){
         boolean validInput;
-        int option = 0;
+        int option;
         Logic logic = new Logic();
         do{
             validInput = true;
             clearConsole();
             System.out.println("-----Admin Menu-----");
-            System.out.println("1----Create New Account\n" +
-                    "2----Delete Existing Account\n" +
-                    "3----Update Account Information\n" +
-                    "4----Search for Account\n" +
-                    "5----Exit");
+            System.out.println("""
+                    1----Create New Account
+                    2----Delete Existing Account
+                    3----Update Account Information
+                    4----Search for Account
+                    5----Exit""");
             option = logic.getValidNumber("Enter option: ");
             if(option < 1 || option > 5){
                 System.out.println("Invalid input. Try again.");
@@ -131,7 +134,7 @@ public class View {
             }
             System.out.println("Do you want to continue(Y/N): ");
             Scanner console = new Scanner(System.in);
-            String check = console.next();
+            String check = console.nextLine();
             if(check.equalsIgnoreCase("N")){
                 continuing = false;
             }
@@ -141,17 +144,18 @@ public class View {
 
     public void customerScreen(String username){
         boolean validInput;
-        int option = 0;
+        int option;
         Logic logic = new Logic();
         do{
             validInput = true;
             clearConsole();
             System.out.println("-----Customer Menu-----");
-            System.out.println("1----Withdraw Cash\n" +
-                    "2----Cash Transfer\n" +
-                    "3----Deposit Cash\n" +
-                    "4----Display Balance\n" +
-                    "5----Exit");
+            System.out.println("""
+                    1----Withdraw Cash
+                    2----Cash Transfer
+                    3----Deposit Cash
+                    4----Display Balance
+                    5----Exit""");
             option = logic.getValidNumber("Enter option: ");
             if(option < 1 || option > 5){
                 System.out.println("Invalid input. Try again.");
@@ -176,7 +180,7 @@ public class View {
             }
             System.out.println("Do you want to continue(Y/N): ");
             Scanner console = new Scanner(System.in);
-            String check = console.next();
+            String check = console.nextLine();
             if(check.equalsIgnoreCase("N")){
                 continuing = false;
             }
