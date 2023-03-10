@@ -5,6 +5,7 @@ import BOLayer.Customer;
 import BOLayer.Transaction;
 import DataLayer.Data;
 
+import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -252,9 +253,8 @@ public class Logic {
                 check = true;
             }
         }while(check);
-// TODO: FIX WHEN CUSTOMER FILE IS EMPTY OR NOT EXIST.
         // Assign last number account.
-        customer.setAccountNo(data.getLastAccountNumber() + 1);
+            customer.setAccountNo(data.getLastAccountNumber() + 1);
 
         // Appending customer to a file
         data.AddToFile(customer, true);
@@ -277,7 +277,7 @@ public class Logic {
 
         Customer customer;
         customer = data.getCustomer(accNo);
-        System.out.printf("You wish to delete the account held by Mr %s. If this information is correct please re-enter the account number:%n", customer.getUsername());
+        System.out.printf("You wish to delete the account held by Mr %s. If this information is correct please re-enter the account number:%n", customer.getName());
         Integer tempAccount = getValidNumber("Number account: ");
         // Checks if the number typed match with the customer number account.
         if (!(Integer.valueOf(customer.getAccountNo()).equals(tempAccount))){

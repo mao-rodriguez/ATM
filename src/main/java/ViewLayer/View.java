@@ -122,17 +122,21 @@ public class View {
             switch (option){
                 case 1:
                     logic.createAccount();
+                    break;
                 case 2:
                     logic.deleteAccount();
+                    break;
                 case 3:
                     logic.updateAccount();
+                    break;
                 case 4:
                     logic.searchAccount();
+                    break;
                 case 5:
                     // Terminate the JVM with a status code of 0
                     System.exit(0);
             }
-            System.out.println("Do you want to continue(Y/N): ");
+            System.out.print("Do you want to continue(Y/N): ");
             Scanner console = new Scanner(System.in);
             String check = console.nextLine();
             if(check.equalsIgnoreCase("N")){
@@ -168,12 +172,16 @@ public class View {
             switch (option){
                 case 1:
                     logic.cashWithdraw(username);
+                    break;
                 case 2:
                     logic.cashTransfer(username);
+                    break;
                 case 3:
                     logic.cashDeposit(username);
+                    break;
                 case 4:
                     logic.displayBalance(username);
+                    break;
                 case 5:
                     // Terminate the JVM with a status code of 0
                     System.exit(0);

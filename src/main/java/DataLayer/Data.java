@@ -1,8 +1,10 @@
 package DataLayer;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class Data {
         return fileBoString;
     }
 
-    public <T> ArrayList ReadFile(String fileName, Class<T> c) {
+    public <T> ArrayList ReadFile(String fileName, Class<T> c){
         List<String> lines;
         ArrayList<T> list = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -66,6 +68,13 @@ public class Data {
             for (String Obj : lines) {
                 T Object = mapper.readValue(Obj, c);
                 list.add(Object);
+            }
+        } catch (NoSuchFileException e){
+            File file = new File(fileName.concat(".txt"));
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         } catch (IOException e) {
             e.printStackTrace();
