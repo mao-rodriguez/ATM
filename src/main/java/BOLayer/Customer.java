@@ -56,12 +56,12 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Customer{" +
+        return "Customer: " +
                 "Username='" + Username + '\'' +
                 ", Name='" + Name + '\'' +
                 ", AccountType='" + AccountType + '\'' +
                 ", Status='" + Status + '\'' +
                 ", AccountNo=" + AccountNo +
-                '}';
+                '.';
     }
 }

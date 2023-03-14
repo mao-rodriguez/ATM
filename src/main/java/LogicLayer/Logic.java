@@ -136,7 +136,7 @@ public class Logic {
                 check = true;
             }
         } while (check);
-        return username;
+        return EncryptionDecryption(username);
     }
 
     private String getName() {
@@ -156,7 +156,7 @@ public class Logic {
         boolean check;
         do {
             check = false;
-            System.out.print("Status: 1. Active, 2. Inactive");
+            System.out.print("Status: 1. Active, 2. Inactive; ");
             status = console.nextLine();
             if (!status.equals("") && !(status.equals("1") || status.equals("2"))){
                 System.out.print("Wrong input. Enter 1. Active, 2. Inactive");
@@ -188,7 +188,7 @@ public class Logic {
     public void disableAccount(String username) {
         Data data = new Data();
         Customer customer = data.getCustomer(username);
-        customer.setStatus("Disable");
+        customer.setStatus("0");
         data.updateInFile(customer);
     }
 
@@ -309,19 +309,21 @@ public class Logic {
 
         // Updating username.
         boolean check;
+        String tempUserName;
         do{
             check = false;
-            customer.setUsername(EncryptionDecryption(getUsername(customer.getUsername())));
-            if (data.isInFile(customer.getUsername())) {
+            tempUserName = getUsername(customer.getUsername());
+            // If username entered is different from current username and username entered is in file.
+            if ( !(tempUserName.equalsIgnoreCase(customer.getUsername())) && data.isInFile(tempUserName)) {
                 System.out.println("Username is in use. Enter again.");
                 check = true;
             }
         }while (check);
+            customer.setUsername(tempUserName);
 
         // Updating PIN.
         do{
             check = false;
-            System.out.println("5 digit PIN: ");
             String pin = String.valueOf(getValidNumber("5 digit PIN: "));
             customer.setPin(EncryptionDecryption(pin));
             // Checks if the PIN typed is valid (PIN is only 5 digit long and can only contain numbers from 0 to 9)
@@ -349,18 +351,27 @@ public class Logic {
 
     // Search account information
     public void searchAccount(){
-        Customer customer = new Customer();
+
         System.out.println("--- SEARCH MENU ---");
         System.out.println("Please enter in the fields you wish to include in search (leave blank otherwise): ");
 
         // Getting Account Number and applying checks
-        customer.setAccountNo(getValidNumber("Account number: "));
+        int accNumber = getValidNumber("Account number: ");
 
         // Username
-        customer.setUsername(EncryptionDecryption(getUsername()));
+        Scanner console = new Scanner(System.in);
+        System.out.print("Username: ");
+        String username = console.nextLine();
+
 
         // Get holder's name
-        customer.setName(getName());
+        String name = getName();
+
+        // Defining customer data.
+        Customer customer = new Customer();
+        customer.setAccountNo(accNumber);
+        customer.setUsername(username);
+        customer.setName(name);
 
         // Getting account list from file
         Data data = new Data();
@@ -369,14 +380,14 @@ public class Logic {
         ArrayList<Customer> outList = new ArrayList<>();
         if(customerlist.size() > 0){
             for(Customer c : customerlist){
-                if(customer.getAccountNo() == 0){
+                if(accNumber == 0){//5
                     customer.setAccountNo(c.getAccountNo());
                 }
-                if(customer.getUsername().isBlank()){
-                    customer.setUsername(c.getUsername());
+                if(username.isBlank()){
+                    customer.setUsername(c.getUsername());//bfor
                 }
-                if(customer.getName().isBlank()){
-                    customer.setName(c.getName());
+                if(name == null){
+                    customer.setName(c.getName());//
                 }
 
                 if(
@@ -392,7 +403,7 @@ public class Logic {
             if(outList.size() > 0){
                 System.out.format("| %-10s | %-10s | %-10s |%n", "# Account", "Username", "Holder's name");
                 for(Customer c : outList){
-                    System.out.format("| %-10d | %-10s | %-10s |%n", c.getAccountNo(), c.getUsername(), c.getName());
+                    System.out.format("| %-10d | %-10s | %-10s |%n", c.getAccountNo(), EncryptionDecryption(c.getUsername()), c.getName());
                 }
             } else{
                 System.out.println("***NO DATA FOUND MATCHING WITH GIVEN DETAILS***");

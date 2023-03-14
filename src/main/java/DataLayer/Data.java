@@ -147,11 +147,13 @@ public class Data {
     public boolean canLogin(Customer user){
         ArrayList<Customer> list = ReadFile("Customer", Customer.class);
         for (Customer customer : list){
-            return (
-                        customer.getUsername().equalsIgnoreCase(user.getUsername())
-                        && customer.getStatus().equalsIgnoreCase("Active")
-                        && customer.getPin().equals(user.getPin())
-                    );
+            if (
+                    customer.getUsername().equalsIgnoreCase(user.getUsername())
+                            && customer.getStatus().equalsIgnoreCase("Active")
+                            && customer.getPin().equals(user.getPin())
+            ) {
+                return true;
+            };
         }
         return false;
     }

@@ -56,7 +56,7 @@ public class View {
 
             // Case 2 for Customer Login
             case 2 -> {
-                System.out.printf("-----Customer Login-----%n" + "Please Enter your username & 5-digit Pin");
+                System.out.printf("-----Customer Login-----%n" + "Please Enter your username & 5-digit Pin%n");
                 // Declaring a customer object
                 Customer customer = new Customer();
                 Scanner console = new Scanner(System.in);
@@ -93,7 +93,6 @@ public class View {
                 }
             }
         }
-
     }
 
     public void adminScreen(){
