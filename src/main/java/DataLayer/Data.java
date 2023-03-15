@@ -149,7 +149,7 @@ public class Data {
         for (Customer customer : list){
             if (
                     customer.getUsername().equalsIgnoreCase(user.getUsername())
-                            && customer.getStatus().equalsIgnoreCase("Active")
+                            && customer.getStatus().equalsIgnoreCase("1")
                             && customer.getPin().equals(user.getPin())
             ) {
                 return true;

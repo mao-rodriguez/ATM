@@ -441,7 +441,7 @@ public class Logic {
     public void cashWithdraw(String username) {
         System.out.println("----- Withdraw Cash -----");
 
-        String msg = "1---Fast Cash".concat(System.lineSeparator()).concat("2---Normal Cash");
+        String msg = "1---Fast Cash".concat(System.lineSeparator()).concat("2---Normal Cash".concat(System.lineSeparator()).concat("Enter option: "));
         int option = getValidNumber(msg);
         if (!(option == 1 || option == 2)) {
             System.out.println("Exiting cash withdraw");
@@ -452,7 +452,6 @@ public class Logic {
         switch (option) {
             // In case of Fast Cash
             case 1: {
-                System.out.println("\\033[H\\033[2J");
                 System.out.println("==== FAST CASH ====");
                 // Putting all possible choices of Fast Cash in a list
                 List<Integer> fastCashOptions = Arrays.asList(100000, 200000, 300000, 400000, 500000, 600000);
@@ -472,7 +471,7 @@ public class Logic {
                         fastCashOptions.get(5));
 
                 // Getting input that which denomination the user want
-                int opt = getValidNumber("Press the amount to withdraw");
+                int opt = getValidNumber("Press the amount to withdraw: ");
                 if (!(opt >= 1 && opt <= 6)) {
                     System.out.println("Wrong input. Exiting cash withdraw");
                     return;
@@ -501,8 +500,9 @@ public class Logic {
                 // Making and recording transaction to file
                 Transaction transaction = makeTransaction(customer, fastCashOptions.get(opt - 1), "Cash Withdrawl");
                 // Asking if user wants a receipt
-                System.out.println("Do you wish to print a receipt(Y/N)? ");
-                if (console.nextLine().equals("Y")) {
+                System.out.print("Do you wish to print a receipt(Y/N)? ");
+                String op = console.nextLine();
+                if (op.equals("Y")) {
                     printReceipt(transaction, "Withdrawn");
                 }
             }

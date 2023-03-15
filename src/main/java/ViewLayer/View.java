@@ -61,22 +61,24 @@ public class View {
                 Customer customer = new Customer();
                 Scanner console = new Scanner(System.in);
 
-                // Reading and storing username and PIN.
-                System.out.print("Username: ");
-                String username = console.nextLine();
-                customer.setUsername(username);
-                System.out.print("PIN: ");
-                String pin = console.nextLine();
-                customer.setPin(pin);
-                // Doing encryption
-                customer.setUsername(logic.EncryptionDecryption(customer.getUsername()));
-                customer.setPin(logic.EncryptionDecryption(customer.getPin()));
-                if (!logic.isValidUserName(customer.getUsername())) {
-                    System.out.println("Invalid Username input. Enter again");
-                    return;
-                }
+
                 int attempt = 0;
-                while (attempt < 3) {
+                while (true) {
+                    if (attempt >= 3) break;
+                    // Reading and storing username and PIN.
+                    System.out.print("Username: ");
+                    String username = console.nextLine();
+                    customer.setUsername(username);
+                    System.out.print("PIN: ");
+                    String pin = console.nextLine();
+                    customer.setPin(pin);
+                    // Doing encryption
+                    customer.setUsername(logic.EncryptionDecryption(customer.getUsername()));
+                    customer.setPin(logic.EncryptionDecryption(customer.getPin()));
+                    if (!logic.isValidUserName(customer.getUsername())) {
+                        System.out.println("Invalid Username input. Enter again");
+                        return;
+                    }
                     if (logic.canLogin(customer)) {
                         System.out.println("--- Logged in as Customer ---");
                         customerScreen(customer.getUsername());
