@@ -1,1 +1,0 @@
-{"date":"14-03-2023 21:32:39","userName":"bfor","transactionAmount":100000,"balance":200000,"accountNo":5,"transactionType":"Cash Withdrawl","holdersName":"Yuli Macias"}

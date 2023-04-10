@@ -4,7 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### Project related ###
-.txt
+*.txt
 
 ### IntelliJ IDEA ###
 .idea/
