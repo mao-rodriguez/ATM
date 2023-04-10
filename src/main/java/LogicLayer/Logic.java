@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Multiple methods that define core transactions.
+ * @Author Mauricio Rodríguez
+ */
 public class Logic {
 
     // Verify if admin data is in file.

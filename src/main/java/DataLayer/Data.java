@@ -15,9 +15,18 @@ import BOLayer.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+/**
+ * Data manage the access and CRUD operations with persistence files.
+ * @Autor Mauricio Rodríguez
+ */
 public class Data {
 
-    // Appends object to a file in json format
+    /**
+     * Appends object to a file in json format
+     * @param obj
+     * @param appending
+     * @param <T>
+     */
     public <T> void AddToFile(T obj, Boolean appending) {
         String fileBoString = getFileToManage(obj);
 
