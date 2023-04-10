@@ -477,7 +477,8 @@ public class Logic {
                     return;
                 }
                 System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", fastCashOptions.get(opt - 1));
-                if (!(console.nextLine().equalsIgnoreCase("Y"))) {
+                String op = console.nextLine();
+                if (!(op.equalsIgnoreCase("Y"))) {
                     System.out.println("Transaction was not confirmed.");
                     return;
                 }
@@ -501,7 +502,7 @@ public class Logic {
                 Transaction transaction = makeTransaction(customer, fastCashOptions.get(opt - 1), "Cash Withdrawl");
                 // Asking if user wants a receipt
                 System.out.print("Do you wish to print a receipt(Y/N)? ");
-                String op = console.nextLine();
+                op = console.nextLine();
                 if (op.equals("Y")) {
                     printReceipt(transaction, "Withdrawn");
                 }
@@ -509,11 +510,11 @@ public class Logic {
             break;
             case 2:
                 // In case of Normal Cash
-                System.out.println("\\033[H\\033[2J");
                 System.out.println("==== FAST CASH ====");
                 int amount = getValidNumber("Enter the withdrawal amount: ");
                 System.out.printf("Are you sure you want to withdraw $%d (Y/N)?", amount);
-                if (!(console.nextLine().equals("Y"))) {
+                String op = console.nextLine();
+                if (!(op.equalsIgnoreCase("Y"))) {
                     System.out.println("Transaction was not confirmed.");
                     return;
                 }
@@ -526,7 +527,7 @@ public class Logic {
                     return;
                 }
                 // Checking if user has sufficient balance
-                if (!(customer.getBalance() > amount)) {
+                if (!(customer.getBalance() >= amount)) {
                     System.out.println("Insufficient Balance. Transaction failed!");
                     return;
                 }
@@ -536,8 +537,9 @@ public class Logic {
                 // Making and recording transaction to file
                 Transaction transaction = makeTransaction(customer, amount, "Cash Withdrawal");
                 // Asking if user wants a receipt
-                System.out.println("Do you wish to print a receipt(Y/N)? ");
-                if (console.nextLine().equalsIgnoreCase("Y")) {
+                System.out.print("Do you wish to print a receipt(Y/N)? ");
+                op = console.nextLine();
+                if (op.equalsIgnoreCase("Y")) {
                     printReceipt(transaction, "Withdrawn");
                 }
             break;
@@ -604,11 +606,10 @@ public class Logic {
         // Asking if user wants a receipt
         System.out.println("Do you wish to print a receipt(Y/N)? ");
         Scanner console = new Scanner("System.io");
-        if (console.nextLine().equalsIgnoreCase("Y")) {
+        String op = console.nextLine();
+        if (op.equalsIgnoreCase("Y")) {
             printReceipt(transaction, "Amount Deposited.");
         }
-
-
     }
 
     // Method to display balance
@@ -630,7 +631,7 @@ public class Logic {
     public void printReceipt(Transaction transaction, String t){
         System.out.printf("Account # %d%n", transaction.getAccountNo());
         System.out.printf("Date %s%n", transaction.getDate());
-        System.out.printf("%s: %d", t, transaction.getTransactionAmount());
-        System.out.printf("%s: %d", t, transaction.getBalance());
+        System.out.printf("%s: %d%n", t, transaction.getTransactionAmount());
+        System.out.printf("%s: %d%n", "Balance", transaction.getBalance());
     }
 }

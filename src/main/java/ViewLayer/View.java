@@ -187,7 +187,7 @@ public class View {
                     // Terminate the JVM with a status code of 0
                     System.exit(0);
             }
-            System.out.println("Do you want to continue(Y/N): ");
+            System.out.print("Do you want to continue(Y/N): ");
             Scanner console = new Scanner(System.in);
             String check = console.nextLine();
             if(check.equalsIgnoreCase("N")){
